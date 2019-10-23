@@ -1,5 +1,7 @@
 const db = require('../models')
 const SUCCESS = require('../constants/success')
+const slackbotWebhook = require('../webhooks/slackbotWebhook')
+
 const User = db.User
 const Report = db.Report
 const Sequelize = db.Sequelize
@@ -49,6 +51,7 @@ const reportController = {
       wordCount: req.body.content.length
     }).then(() => {
       res.json(SUCCESS.GENERAL)
+      slackbotWebhook(req)
     }).catch(err => {
       console.log(err)
       res.status(500).end()
