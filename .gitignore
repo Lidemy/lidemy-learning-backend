@@ -2,3 +2,4 @@ node_modules/
 .DS_STORE
 config/firebase.json
 config/config.json
+.env

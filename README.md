@@ -36,11 +36,13 @@ Lidemy 學習系統 Back-end 原始碼，
 
 ```
 
-接著還有兩個環境變數需要設置，一個是 FIREBASE_DB_URL，或也可以直接更改 `utils/firebase.js`。另一個是 middwares/auth.js 裡的 `REGISTER_CODE`，預設為 TEST。
+接著請複製`.env.example`並改名成`.env`，並且設置裡面的環境變數：
+
+1. FIREBASE_DB_URL
+2. REGISTER_CODE
 
 最後 `npm install` 即可。
 
 ### 開發
 
 1. `npm run dev`
-2. `REGISTER_CODE=123 FIREBASE_DB_URL=xxx npm run dev` （如果要設置環境變數的話）
