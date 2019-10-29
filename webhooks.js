@@ -43,6 +43,5 @@ module.exports.sendReportToSlack = req => {
 }
 
   axios.post(SLACK_WEBHOOK_URL, postData)
-  .then()
   .catch(error => console.log(error))
 }
