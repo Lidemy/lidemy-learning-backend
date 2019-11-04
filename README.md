@@ -40,6 +40,7 @@ Lidemy 學習系統 Back-end 原始碼，
 
 1. FIREBASE_DB_URL
 2. REGISTER_CODE
+3. SLACK_WEBHOOK_URL
 
 最後 `npm install` 即可。
 
