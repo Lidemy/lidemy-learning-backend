@@ -11,6 +11,7 @@ module.exports = (sequelize, DataTypes) => {
     isTA: DataTypes.BOOLEAN,
     isStudent: DataTypes.BOOLEAN,
     slackId: DataTypes.STRING,
+    // role: 第幾期學生
     role: DataTypes.INTEGER
   }, {});
   User.associate = function(models) {
