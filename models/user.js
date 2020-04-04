@@ -7,7 +7,12 @@ module.exports = (sequelize, DataTypes) => {
     progress: DataTypes.INTEGER,
     githubId: DataTypes.INTEGER,
     isDelete: DataTypes.BOOLEAN,
-    isAdmin: DataTypes.BOOLEAN
+    isAdmin: DataTypes.BOOLEAN,
+    isTA: DataTypes.BOOLEAN,
+    isStudent: DataTypes.BOOLEAN,
+    slackId: DataTypes.STRING,
+    // role: 第幾期學生
+    role: DataTypes.INTEGER
   }, {});
   User.associate = function(models) {
     User.hasMany(models.Progression)

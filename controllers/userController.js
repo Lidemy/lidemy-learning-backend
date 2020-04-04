@@ -17,12 +17,13 @@ const userController = {
 
   updateUser: (req, res) => {
     const id = req.params.id
-    if (Number(id) !== req.user.id || !req.body.nickname) {
+    if (Number(id) !== req.user.id || !req.body.nickname || !req.body.slackId) {
       return res.status(401).end()
     }
     User.findByPk(req.user.id).then(user => {
       return user.update({
-        nickname: req.body.nickname.slice(0, 20)
+        nickname: req.body.nickname.slice(0, 20),
+        slackId: req.body.slackId
       })
     }).then(() => {
       res.json(SUCCESS.GENERAL)
