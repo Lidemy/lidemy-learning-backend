@@ -11,12 +11,17 @@ module.exports = (sequelize, DataTypes) => {
     isTA: DataTypes.BOOLEAN,
     isStudent: DataTypes.BOOLEAN,
     slackId: DataTypes.STRING,
-    // role: 第幾期學生
-    role: DataTypes.INTEGER
+    semester: DataTypes.INTEGER,
+    priceType: DataTypes.ENUM(['A', 'B']),
+    status: DataTypes.ENUM(['active', 'inactive'])
   }, {});
   User.associate = function(models) {
     User.hasMany(models.Progression)
     User.hasMany(models.Report)
+    User.hasMany(models.Homework, {
+      as: 'homeworks',
+      foreignKey: 'TAId'
+    })
   };
   return User;
 };
