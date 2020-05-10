@@ -4,6 +4,7 @@ const SUCCESS = require('../constants/success')
 const User = db.User
 const Progression = db.Progression
 const Report = db.Report
+const Homework = db.Homework
 const sequelize = db.sequelize
 
 function formatTime(time) {
@@ -86,13 +87,34 @@ const userController = {
     })
   },
 
+  getTAs: (req, res) => {
+    if (!req.user.isAdmin) {
+      return res.status(500).end()
+    }
+    User.findAll({
+      attributes: ['id', 'picture', 'nickname', 'slackId', 'status'],
+      include: [{
+        model: Homework,
+        as: 'homeworks'
+      }],
+      where: {
+        isTA: true
+      },
+    }).then(users => {
+      res.json(users);
+    }).catch(err => {
+      console.log(err)
+      res.status(500).end()
+    })
+  },
+
   getUserProfile: (req, res) => {
     const userId = req.params.id
     Report.findAll({
       attributes: ['createdAt', 'wordCount'],
       where: {
         UserId: userId
-      }
+      },
     }).then(reports => {
       const dates = reports.map(report => formatTime(report.createdAt))
       const count = reports.reduce((total, report) => total + report.wordCount, 0)
@@ -110,6 +132,23 @@ const userController = {
           progressions: progressions.map(item => `${formatTime(item.createdAt)} 成功征服第 ${item.level} 週`)
         })
       })
+    }).catch(err => {
+      console.log(err)
+      res.status(500).end()
+    })
+  },
+
+  toggleStatus: (req, res) => {
+    User.findByPk(req.user.id).then(user => {
+      const status = user.status
+      const isTa = user.isTA
+      if(isTa) {
+        user.update({
+          status: status === 'active' ? 'inactive' : 'active'
+        })
+      }
+    }).then(() => {
+      res.json(SUCCESS.GENERAL)
     }).catch(err => {
       console.log(err)
       res.status(500).end()
