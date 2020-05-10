@@ -1,6 +1,6 @@
 ## 簡介
 
-Lidemy 學習系統 Back-end 原始碼，
+這是 Lidemy 學習系統後端原始碼，採用 Express + Sequelize 開發。
 
 ## 建置
 
@@ -47,3 +47,7 @@ Lidemy 學習系統 Back-end 原始碼，
 ### 開發
 
 1. `npm run dev`
+
+### 部署
+
+1. `npm run pm2`
