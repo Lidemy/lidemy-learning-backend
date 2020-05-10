@@ -7,28 +7,16 @@ const sequelize = db.sequelize
 
 const homeworkController = {
   getHomeworks: (req, res) => {
+    const TAId = Number(req.query.TAId);
+    const UserId = Number(req.query.UserId);
     const where = {
-      UserId: req.params.id
-    } 
+      ...(TAId && { TAId }),
+      ...(UserId && { UserId })
+    }
     Homework.findAll({
       include: ['user', 'ta'],
       attributes: ['id', 'prUrl', 'week', 'isAchieve', 'isLike', 'TAId', 'createdAt'],
-      ...(Number(req.params.id) && { where })
-    }).then(homeworks => {
-      res.json(homeworks)
-    }).catch(err => {
-      console.log(err)
-      res.status(500).end()
-    })
-  },
-  getTAHomeworks: (req, res) => {
-    const where = {
-      TAId: req.query.TAId
-    } 
-    Homework.findAll({
-      include: ['user', 'ta'],
-      attributes: ['id', 'prUrl', 'week', 'isAchieve', 'isLike', 'TAId', 'createdAt'],
-      ...(Number(req.query.TAId) && { where })
+      ...((TAId || UserId) && { where })
     }).then(homeworks => {
       res.json(homeworks)
     }).catch(err => {
