@@ -38,10 +38,6 @@ const homeworkController = {
   },
 
   likeHomework: (req, res) => {
-    if (!req.user.isTA) {
-      return res.status(500).end()
-    }
-
     Homework.findByPk(req.params.id).then(homework => {
       const isLike = homework.isLike
       homework.update({
@@ -56,10 +52,6 @@ const homeworkController = {
   },
 
   achieveHomework: (req, res) => {
-    if (!req.user.isTA) {
-      return res.status(500).end()
-    }
-
     Homework.findByPk(req.params.id).then(homework => {
       const isAchieve = homework.isAchieve
       homework.update({
@@ -85,6 +77,9 @@ const homeworkController = {
         status: 'active',
       }
     }).then(activeTAList => {
+      if (activeTAList.length === 0) {
+        return res.status(500).end()
+      }
       Homework.findAll({
         group: ['TAId'],
         attributes: ['TAId', [sequelize.fn('COUNT', 'id'), 'homeworkCount']],
@@ -119,6 +114,9 @@ const homeworkController = {
           res.status(500).end()
         })
 
+      }).catch(err => {
+        console.log(err)
+        res.status(500).end()
       })
     }).catch(err => {
       console.log(err)

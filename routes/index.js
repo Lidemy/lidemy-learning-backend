@@ -6,13 +6,20 @@ const adminController = require('../controllers/adminController')
 const reportController = require('../controllers/reportController')
 const homeworkController = require('../controllers/homeworkController')
 
-
-const onlyAdmin = (req, res, next) => {
-  if (req.user.isAdmin) {
+const checkPermission = (roles = []) => (req, res, next) => {
+  if (roles.indexOf('admin') >= 0 && req.user.isAdmin) {
     return next()
   }
+
+  if (roles.indexOf('TA') >= 0 && req.user.isTA) {
+    return next()
+  }
+
   res.status(401)
 }
+
+const onlyAdmin = checkPermission(['admin'])
+const adminAndTA = checkPermission(['admin', 'TA'])
 
 router.get('/', (req, res) => res.end('hello'))
 router.get('/users/me', userController.me)
@@ -38,8 +45,8 @@ router.delete('/admin/news/:id', onlyAdmin, adminController.deleteAnnouncement)
 
 router.get('/homeworks', homeworkController.getTAHomeworks)
 router.get('/homeworks/:id', homeworkController.getHomeworks)
-router.get('/homeworks/:id/like', homeworkController.likeHomework)
-router.get('/homeworks/:id/achieve', homeworkController.achieveHomework)
+router.get('/homeworks/:id/like', adminAndTA, homeworkController.likeHomework)
+router.get('/homeworks/:id/achieve', adminAndTA, homeworkController.achieveHomework)
 router.post('/homeworks', homeworkController.createHomework)
 
 router.post('/news', adminController.getAnnouncements)
