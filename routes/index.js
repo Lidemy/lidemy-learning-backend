@@ -44,6 +44,7 @@ router.put('/admin/news/:id', onlyAdmin, adminController.updateAnnouncement)
 router.delete('/admin/news/:id', onlyAdmin, adminController.deleteAnnouncement)
 
 router.get('/homeworks', homeworkController.getHomeworks)
+router.get('/homeworks/achieve/data', homeworkController.getHomeworksAchieveData)
 router.get('/homeworks/:id/like', adminAndTA, homeworkController.likeHomework)
 router.get('/homeworks/:id/achieve', adminAndTA, homeworkController.achieveHomework)
 router.post('/homeworks', homeworkController.createHomework)

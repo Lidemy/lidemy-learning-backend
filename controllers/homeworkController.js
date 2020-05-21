@@ -9,10 +9,9 @@ const homeworksLimit = 10
 const homeworkController = {
   getHomeworks: (req, res) => {
     let offset = 0
-    if(req.query.page) {
+    if(req.query.page || 1) {
       offset = (req.query.page - 1) * homeworksLimit
     }
-
     const sort = req.query.sort || 'id'
     const order = req.query.order || 'ASC'
     Homework.findAndCountAll({
@@ -24,10 +23,8 @@ const homeworkController = {
         ...(req.query.ta  && { where: { nickname: JSON.parse(req.query.ta) } }),
       }],
       attributes: ['id', 'prUrl', 'week', 'isAchieve', 'isLike', 'TAId', 'createdAt'],
-      ...(req.query.page && { 
-        limit: homeworksLimit, 
-        offset: offset 
-      }),
+      limit: homeworksLimit, 
+      offset: offset,
       order: [[sort, order]],
       where: {
         ...(req.query.like && { isLike: JSON.parse(req.query.like) }),
@@ -36,6 +33,18 @@ const homeworkController = {
         ...(req.query.UserId && { UserId: JSON.parse(req.query.UserId) }),
         ...(req.query.week && { week: JSON.parse(req.query.week) })
       }
+    }).then(homeworks => {
+      res.json(homeworks)
+    }).catch(err => {
+      console.log(err)
+      res.status(500).end()
+    })
+  },
+
+  getHomeworksAchieveData: (req, res) => {
+    Homework.findAll({
+      attributes: ['week', 'isAchieve', [sequelize.fn('COUNT', 'id'), 'homeworkCount']],
+      group: ['week', 'isAchieve']
     }).then(homeworks => {
       res.json(homeworks)
     }).catch(err => {
