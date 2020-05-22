@@ -4,16 +4,35 @@ const SUCCESS = require('../constants/success')
 const User = db.User
 const Homework = db.Homework
 const sequelize = db.sequelize
+const homeworksLimit = 10
 
 const homeworkController = {
   getHomeworks: (req, res) => {
-    const where = {
-      UserId: req.params.id
-    } 
-    Homework.findAll({
-      include: ['user', 'ta'],
+    let offset = 0
+    if(req.query.page || 1) {
+      offset = (req.query.page - 1) * homeworksLimit
+    }
+    const sort = req.query.sort || 'id'
+    const order = req.query.order || 'ASC'
+    Homework.findAndCountAll({
+      include: [{
+        association: 'user',
+        ...(req.query.student  && { where: { nickname: JSON.parse(req.query.student) } }),
+      }, {
+        association: 'ta',
+        ...(req.query.ta  && { where: { nickname: JSON.parse(req.query.ta) } }),
+      }],
       attributes: ['id', 'prUrl', 'week', 'isAchieve', 'isLike', 'TAId', 'createdAt'],
-      ...(Number(req.params.id) && { where })
+      limit: homeworksLimit, 
+      offset: offset,
+      order: [[sort, order]],
+      where: {
+        ...(req.query.like && { isLike: JSON.parse(req.query.like) }),
+        ...(req.query.achieve && { isAchieve: JSON.parse(req.query.achieve) }),
+        ...(req.query.TAId && { TAId: JSON.parse(req.query.TAId) }),
+        ...(req.query.UserId && { UserId: JSON.parse(req.query.UserId) }),
+        ...(req.query.week && { week: JSON.parse(req.query.week) })
+      }
     }).then(homeworks => {
       res.json(homeworks)
     }).catch(err => {
@@ -21,14 +40,11 @@ const homeworkController = {
       res.status(500).end()
     })
   },
-  getTAHomeworks: (req, res) => {
-    const where = {
-      TAId: req.query.TAId
-    } 
+
+  getHomeworksAchieveData: (req, res) => {
     Homework.findAll({
-      include: ['user', 'ta'],
-      attributes: ['id', 'prUrl', 'week', 'isAchieve', 'isLike', 'TAId', 'createdAt'],
-      ...(Number(req.query.TAId) && { where })
+      attributes: ['week', 'isAchieve', [sequelize.fn('COUNT', 'id'), 'homeworkCount']],
+      group: ['week', 'isAchieve']
     }).then(homeworks => {
       res.json(homeworks)
     }).catch(err => {
