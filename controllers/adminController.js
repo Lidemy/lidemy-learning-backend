@@ -7,7 +7,7 @@ const adminController = {
   getAnnouncements: (req, res) => {
     Announcement.findAll({
       include: [User],
-      limit: 10,
+      limit: 5,
       order: [['createdAt', 'DESC']]
     }).then(list => {
       res.json(list)
