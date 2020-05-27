@@ -20,9 +20,20 @@ const reportController = {
     let include = [{
       model: User,
       where: {
-        progress: {
-          [Op.between]: [req.user.progress - 3, req.user.progress + 1]
-        }
+        [Op.or]:[
+          {
+            progress: {
+              [Op.between]: [req.user.progress - 3, req.user.progress + 1]
+            },
+            semester: req.user.semester,
+          }, 
+          {
+            isTa: true
+          }, 
+          {
+            isAdmin: true
+          }
+        ]
       }
     }]
     if (req.query.all) {
