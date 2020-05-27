@@ -1,5 +1,6 @@
 const db = require('../models')
 const SUCCESS = require('../constants/success')
+const jwt = require('jsonwebtoken')
 const User = db.User
 const Announcement = db.Announcement
 
@@ -69,6 +70,17 @@ const adminController = {
       console.log(err)
       res.status(500).end()
     })
+  },
+
+  createInvite: (req, res) => {
+    console.log(process.env.SIGNATURE);
+    const token = jwt.sign({ 
+      semester:  req.body.semester,
+      role:  req.body.role,
+      priceType: 'A',
+      exp: Math.floor(Date.now() / 1000) + 60,
+    }, process.env.SIGNATURE)
+    return res.json({ token })
   }
 }
 
