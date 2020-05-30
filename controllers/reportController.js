@@ -28,11 +28,10 @@ const reportController = {
             semester: req.user.semester,
           }, 
           {
-            isTa: true
+            [Op.not]: {
+              semester: req.user.semester
+            }
           }, 
-          {
-            isAdmin: true
-          }
         ]
       }
     }]
