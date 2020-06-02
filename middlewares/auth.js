@@ -1,4 +1,5 @@
 const get = require('lodash/get')
+const jwt = require('jsonwebtoken')
 
 const models = require('../models')
 const User = models.User
@@ -31,28 +32,33 @@ function checkAuth(req, res, next) {
 }
 
 function register(req, res, next) {
-  const code = req.body.code
-  if (!req.token || code !== REGISTER_CODE) {
-    return res.status(401).json(ERROR.UNAUTHORIZED)
-  }
-
-  admin.auth().verifyIdToken(req.token)
+  try {
+    const payload = jwt.verify(req.query.token, process.env.SIGNATURE);
+    admin.auth().verifyIdToken(req.token)
       .then(function(decodedToken) {
         User.create({
           nickname: decodedToken.name || decodedToken.email.split('@')[0],
           email: decodedToken.email,
           picture: decodedToken.picture,
-          githubId: get(decodedToken, 'firebase.identities["github.com"][0]')
+          githubId: get(decodedToken, 'firebase.identities["github.com"][0]'),
+          priceType: payload.priceType,
+          semester: Number(payload.semester),
+          status: 'active',
+          ...(payload.role === 'student' && { isStudent: true }),
+          ...(payload.role === 'ta' && { isTA: true })
         }).then(user => {
           res.json({
             ok: true
           })
         }).catch(err => {
-          res.status(401).json(ERROR.INVALID_USER)
+          res.status(401).json(ERROR.REPEAT_USER)
         })        
       }).catch(function(err) {
         res.status(401).json(ERROR.UNAUTHORIZED)
-      });
+      })
+  } catch(err) {
+    res.status(401).json(ERROR.EXPIRE_INVITE)
+  }
 }
 
 module.exports = {
