@@ -73,12 +73,11 @@ const adminController = {
   },
 
   createInvite: (req, res) => {
-    console.log(process.env.SIGNATURE);
     const token = jwt.sign({ 
       semester:  req.body.semester,
       role:  req.body.role,
       priceType: 'A',
-      exp: Math.floor(Date.now() / 1000) + 60,
+      exp: Math.floor(Date.now() / 1000) + (3600 * 24 * 7),
     }, process.env.SIGNATURE)
     return res.json({ token })
   }
