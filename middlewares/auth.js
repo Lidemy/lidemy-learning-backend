@@ -51,9 +51,11 @@ function register(req, res, next) {
             ok: true
           })
         }).catch(err => {
+          console.log('err1', err)
           res.status(401).json(ERROR.REPEAT_USER)
         })        
       }).catch(function(err) {
+        console.log('err2', err)
         res.status(401).json(ERROR.UNAUTHORIZED)
       })
   } catch(err) {

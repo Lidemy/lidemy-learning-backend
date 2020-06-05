@@ -16,7 +16,7 @@ app.use(cors())
 app.use(bodyParser.urlencoded({extended: true}))
 app.use(bodyParser.json())
 app.use(bearerToken())
-app.get('/v1/invite', auth.register)
+app.get('/v1/register', auth.register)
 app.use(auth.checkAuth)
 
 app.listen(port, () => {
