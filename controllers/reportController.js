@@ -61,7 +61,8 @@ const reportController = {
       wordCount: req.body.content.length
     }).then(() => {
       res.json(SUCCESS.GENERAL)
-      webhooks.sendReportToSlack(req)
+      // NOTE: disable slack integration for now
+      // webhooks.sendReportToSlack(req)
     }).catch(err => {
       console.log(err)
       res.status(500).end()
