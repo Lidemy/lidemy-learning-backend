@@ -121,7 +121,7 @@ const homeworkController = {
             if (Math.random() >= 0.7) {
               TA = hasHomeworkTA[0].TAId;
             } else { // other TA
-              const num = Math.random() * (hasHomeworkTA.length - 1)
+              const num = Math.floor(Math.random() * (hasHomeworkTA.length - 1))
               TA = hasHomeworkTA[num + 1]
             }
           }
