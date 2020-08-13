@@ -122,7 +122,7 @@ const homeworkController = {
               TA = hasHomeworkTA[0].TAId;
             } else { // other TA
               const num = Math.floor(Math.random() * (hasHomeworkTA.length - 1))
-              TA = hasHomeworkTA[num + 1]
+              TA = hasHomeworkTA[num + 1].TAId
             }
           }
         }
