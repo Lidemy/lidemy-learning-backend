@@ -113,7 +113,18 @@ const homeworkController = {
             .filter(ta => !hasHomeworkTA.map(item => item.TAId).includes(ta));
           TA = difference[0];
         } else {
-          TA = hasHomeworkTA[0].TAId;
+          // assign TA by random number
+          if (hasHomeworkTA.length === 1) {
+            TA = hasHomeworkTA[0].TAId;
+          } else {
+            // 30%
+            if (Math.random() >= 0.7) {
+              TA = hasHomeworkTA[0].TAId;
+            } else { // other TA
+              const num = Math.floor(Math.random() * (hasHomeworkTA.length - 1))
+              TA = hasHomeworkTA[num + 1]
+            }
+          }
         }
    
         Homework.create({
