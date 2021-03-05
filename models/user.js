@@ -13,7 +13,8 @@ module.exports = (sequelize, DataTypes) => {
     slackId: DataTypes.STRING,
     semester: DataTypes.INTEGER,
     priceType: DataTypes.ENUM(['A', 'B']),
-    status: DataTypes.ENUM(['active', 'inactive'])
+    status: DataTypes.ENUM(['active', 'inactive']),
+    weight: DataTypes.FLOAT,
   }, {});
   User.associate = function(models) {
     User.hasMany(models.Progression)

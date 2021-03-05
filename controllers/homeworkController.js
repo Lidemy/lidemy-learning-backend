@@ -87,7 +87,7 @@ const homeworkController = {
     }
 
     User.findAll({
-      attributes: ['id'],
+      attributes: ['id', 'weight'],
       where: {
         isTA: true,
         status: 'active',
@@ -100,29 +100,40 @@ const homeworkController = {
         group: ['TAId'],
         attributes: ['TAId', [sequelize.fn('COUNT', 'id'), 'homeworkCount']],
         where: {
-          TAId: activeTAList.map(ta => ta.id)
+          TAId: activeTAList.map(ta => ta.id),
         },
         distinct: true,
         order: [[sequelize.literal('homeworkCount'), 'ASC']],
       }).then(hasHomeworkTA => {
         let TA = null;
-        // if there are TAs haven't had any homework yet
+        hasHomeworkTA.forEach(ta => console.log(ta))
+        /**
+         * p1: 先給完全沒有改過作業的助教
+         * p2: 如果只有一個助教可以改作業先給他
+         * p3: 改作業數最少的助教會有 0.7 * 自身權重(0 ~ 1) 的機率收到作業
+         * p4: 隨機分配
+         */
         if(activeTAList.length > hasHomeworkTA.length) {
           let difference = activeTAList
             .map(ta => ta.id)
             .filter(ta => !hasHomeworkTA.map(item => item.TAId).includes(ta));
           TA = difference[0];
         } else {
-          // assign TA by random number
+          let taInfo = activeTAList.find(ta => ta.id === hasHomeworkTA[0].TAId);
           if (hasHomeworkTA.length === 1) {
-            TA = hasHomeworkTA[0].TAId;
+            TA = taInfo.id;
           } else {
-            // 30%
-            if (Math.random() >= 0.7) {
-              TA = hasHomeworkTA[0].TAId;
-            } else { // other TA
-              const num = Math.floor(Math.random() * (hasHomeworkTA.length - 1))
-              TA = hasHomeworkTA[num + 1].TAId
+            let num = 0;
+            while(TA === null) {
+              const isLowestWeight = num === 0 ? 0.7 : 0.3;
+              if (Math.random() <= taInfo.weight * isLowestWeight) {
+                TA = taInfo.id;
+              }
+              if(num === hasHomeworkTA.length - 1) {
+                TA = hasHomeworkTA[Math.floor(Math.random() * (hasHomeworkTA.length - 1))].TAId
+              }
+              num += 1;
+              taInfo = activeTAList.find(ta => ta.id === hasHomeworkTA[num].TAId);
             }
           }
         }
