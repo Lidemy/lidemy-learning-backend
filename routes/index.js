@@ -6,6 +6,7 @@ const adminController = require('../controllers/adminController')
 const reportController = require('../controllers/reportController')
 const homeworkController = require('../controllers/homeworkController')
 const unitPermissionsController = require('../controllers/unitPermissionsController')
+const noteController = require('../controllers/noteController')
 
 const checkPermission = (roles = []) => (req, res, next) => {
   if (roles.indexOf('admin') >= 0 && req.user.isAdmin) {
@@ -38,6 +39,10 @@ router.put('/reports/:id', reportController.updateReport)
 router.delete('/reports/:id', reportController.deleteReport)
 
 router.post('/permissions', unitPermissionsController.createUnitPermission)
+
+router.get('/notes', noteController.getWeekNotes)
+router.post('/notes', noteController.createNote)
+router.delete('/notes/:id', noteController.deleteNote)
 
 router.get('/news', adminController.getAnnouncements)
 router.get('/admin/news', onlyAdmin, adminController.getAnnouncements)
