@@ -7,15 +7,17 @@ const Sequelize = db.Sequelize
 const noteController = {
   getWeekNotes: (req, res) => {
     if (!req.query.week) {
-        return res.status(500).end()
+      return res.status(500).end()
     } 
     Notes.findAll({
+      where: {
         week: req.query.week
+      }
     }).then(list => {
         res.json(list)
     }).catch(err => {
-    console.log(err)
-        res.json([])
+      console.log(err)
+      res.json([])
     })
   },
 
