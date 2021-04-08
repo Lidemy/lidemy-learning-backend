@@ -17,5 +17,10 @@ module.exports = {
   EXPIRE_INVITE: {
     error: 'EXPIRE_INVITE',
     messag: 'Invite link is expire'
+  },
+
+  INVALID_TOKEN: {
+    error: 'INVALID_TOKEN',
+    messag: 'Invalid user, week or token'
   }
 }

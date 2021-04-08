@@ -5,6 +5,9 @@ const userController = require('../controllers/userController')
 const adminController = require('../controllers/adminController')
 const reportController = require('../controllers/reportController')
 const homeworkController = require('../controllers/homeworkController')
+const unitPermissionsController = require('../controllers/unitPermissionsController')
+const noteController = require('../controllers/noteController')
+const syllabusController = require('../controllers/syllabusController')
 
 const checkPermission = (roles = []) => (req, res, next) => {
   if (roles.indexOf('admin') >= 0 && req.user.isAdmin) {
@@ -24,7 +27,8 @@ const adminAndTA = checkPermission(['admin', 'TA'])
 router.get('/', (req, res) => res.end('hello'))
 router.get('/users/me', userController.me)
 router.post('/progress/up', userController.upProgress)
-router.post('/progress/down', userController.downProgress)
+router.post('/progress/up', userController.upProgress)
+router.put('/progress', userController.updateProgress)
 router.get('/users/:id/reports', reportController.getUserReports)
 router.get('/users/:id', userController.getUserProfile)
 router.put('/users/:id', userController.updateUser)
@@ -35,6 +39,14 @@ router.get('/reports', reportController.getReports)
 router.post('/reports', reportController.createReport)
 router.put('/reports/:id', reportController.updateReport)
 router.delete('/reports/:id', reportController.deleteReport)
+
+router.post('/permissions/pass', unitPermissionsController.createPassCode)
+router.post('/permissions', unitPermissionsController.createUnitPermission)
+router.get('/permissions', unitPermissionsController.getUnitPermission)
+
+router.get('/notes', noteController.getWeekNotes)
+router.post('/notes', noteController.createNote)
+router.delete('/notes/:id', noteController.deleteNote)
 
 router.get('/news', adminController.getAnnouncements)
 router.get('/admin/news', onlyAdmin, adminController.getAnnouncements)
@@ -52,4 +64,10 @@ router.get('/homeworks/:id/achieve', adminAndTA, homeworkController.achieveHomew
 router.post('/homeworks', homeworkController.createHomework)
 
 router.post('/news', adminController.getAnnouncements)
+
+router.get('/syllabus', syllabusController.getSyllabus)
+router.put('/syllabus', syllabusController.updateSyllabus)
+router.delete('/syllabus', syllabusController.deleteSyllabus)
+
+
 module.exports = router

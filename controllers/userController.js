@@ -16,6 +16,28 @@ const userController = {
     return res.json(req.user)
   },
 
+  updateProgress: (req, res) => {
+    User.findByPk(req.user.id).then(user => {
+      const currentProgress = user.progress
+      return sequelize.transaction(t => {
+        return user.update({
+          progress: req.body.progress
+        }, {transaction: t})
+        .then(() => {
+          return Progression.create({
+            UserId: user.id,
+            level: currentProgress
+          }) 
+        })
+      }).then(() => {
+        res.json(SUCCESS.GENERAL)
+      }).catch(err => {
+        console.log(err)
+        res.status(500).end()
+      })
+    })
+  },
+
   updateUser: (req, res) => {
     const id = req.params.id
     if (Number(id) !== req.user.id || !req.body.nickname) {
