@@ -7,6 +7,7 @@ const reportController = require('../controllers/reportController')
 const homeworkController = require('../controllers/homeworkController')
 const unitPermissionsController = require('../controllers/unitPermissionsController')
 const noteController = require('../controllers/noteController')
+const syllabusController = require('../controllers/syllabusController')
 
 const checkPermission = (roles = []) => (req, res, next) => {
   if (roles.indexOf('admin') >= 0 && req.user.isAdmin) {
@@ -63,4 +64,10 @@ router.get('/homeworks/:id/achieve', adminAndTA, homeworkController.achieveHomew
 router.post('/homeworks', homeworkController.createHomework)
 
 router.post('/news', adminController.getAnnouncements)
+
+router.get('/syllabus', syllabusController.getSyllabus)
+router.put('/syllabus', syllabusController.updateSyllabus)
+router.delete('/syllabus', syllabusController.deleteSyllabus)
+
+
 module.exports = router
