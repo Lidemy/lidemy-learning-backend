@@ -77,7 +77,7 @@ const adminController = {
       semester:  req.body.semester,
       role:  req.body.role,
       priceType: 'A',
-      exp: Math.floor(Date.now() / 1000) + (3600 * 24 * 7),
+      exp: Math.floor(Date.now() / 1000) + (3600 * 24 * 30),
     }, process.env.SIGNATURE)
     return res.json({ token })
   }
