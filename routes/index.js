@@ -54,6 +54,7 @@ router.post('/admin/news', onlyAdmin, adminController.createAnnouncement)
 router.get('/admin/news/:id', onlyAdmin, adminController.getAnnouncement)
 router.put('/admin/news/:id', onlyAdmin, adminController.updateAnnouncement)
 router.delete('/admin/news/:id', onlyAdmin, adminController.deleteAnnouncement)
+router.get('/admin/users/drop', onlyAdmin, adminController.getDropUsers)
 
 router.post('/invite', onlyAdmin, adminController.createInvite)
 

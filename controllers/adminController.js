@@ -3,6 +3,7 @@ const SUCCESS = require('../constants/success')
 const jwt = require('jsonwebtoken')
 const User = db.User
 const Announcement = db.Announcement
+const sequelize = db.sequelize
 
 const adminController = {
   getAnnouncements: (req, res) => {
@@ -80,6 +81,17 @@ const adminController = {
       exp: Math.floor(Date.now() / 1000) + (3600 * 24 * 30),
     }, process.env.SIGNATURE)
     return res.json({ token })
+  },
+
+  getDropUsers: (req, res) => {
+    const { begin, end, semester } = req.query;
+    sequelize.query(`select Users.id, Users.nickname, Users.email, Users.progress, (select week from Homework where UserId=Users.id order by week desc limit 1) as hw, Users.priceType, COUNT(Reports.UserId) as count from Users left join Reports on Users.id = Reports.UserId and Reports.createdAt between '${begin}' and '${end}' where isStudent = 1 and semester = ${semester} and isDelete is NULL group by Users.id order by count DESC, id ASC`)
+      .then(([results, metadata]) => {
+        res.json(results) 
+      }).catch((err) => {
+        console.log(err);
+        res.status(500).end()
+      })
   }
 }
 
