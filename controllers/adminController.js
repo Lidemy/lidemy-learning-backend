@@ -89,7 +89,14 @@ const adminController = {
     }
 
     sequelize.query('select Users.id, Users.nickname, Users.email, Users.progress, (select week from Homework where UserId=Users.id order by week desc limit 1) as hw, Users.priceType, COUNT(Reports.UserId) as count from Users left join Reports on Users.id = Reports.UserId and Reports.createdAt between $begin and $end where isStudent = 1 and semester = $semester and isDelete is NULL group by Users.id order by count DESC, id ASC',
-      { bind: req.query, type: sequelize.QueryTypes.SELECT }).then(users => {
+      { 
+        bind: {
+          begin: req.query.begin,
+          end: req.query.end,
+          semester: req.query.semester
+        }, 
+        type: sequelize.QueryTypes.SELECT 
+      }).then(users => {
         res.json(users) 
       }).catch((err) => {
         console.log(err);
