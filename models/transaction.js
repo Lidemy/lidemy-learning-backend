@@ -5,8 +5,14 @@ module.exports = (sequelize, DataTypes) => {
     name: DataTypes.STRING,
     amount: DataTypes.INTEGER,
     bankCode: DataTypes.STRING,
-    isDelete: DataTypes.BOOLEAN,
-    isCreateByAdmin: DataTypes.BOOLEAN,
+    isDelete: {
+      type: DataTypes.BOOLEAN,
+      defaultValue: false
+    },
+    isCreateByAdmin: {
+      type: DataTypes.BOOLEAN,
+      defaultValue: false
+    },
     status: {
       type: DataTypes.ENUM(['pending', 'confirming', 'paid']),
       defaultValue: 'pending'
