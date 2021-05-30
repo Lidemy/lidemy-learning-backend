@@ -7,7 +7,8 @@
     "pm2": "NODE_ENV=production pm2 start npm --name lidemy-learning -- start",
     "start": "node app.js",
     "dev": "nodemon app.js",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "db:migrate": "npx sequelize-cli db:migrate"
   },
   "author": "",
   "license": "ISC",

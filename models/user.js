@@ -13,6 +13,8 @@ module.exports = (sequelize, DataTypes) => {
     slackId: DataTypes.STRING,
     semester: DataTypes.INTEGER,
     priceType: DataTypes.ENUM(['A', 'B']),
+    isPlanSelected: DataTypes.BOOLEAN,
+    disablePlanSelect: DataTypes.BOOLEAN,
     status: DataTypes.ENUM(['active', 'inactive'])
   }, {});
   User.associate = function(models) {
