@@ -8,6 +8,7 @@ const homeworkController = require('../controllers/homeworkController')
 const unitPermissionsController = require('../controllers/unitPermissionsController')
 const noteController = require('../controllers/noteController')
 const syllabusController = require('../controllers/syllabusController')
+const transactionController = require('../controllers/transactionController')
 
 const checkPermission = (roles = []) => (req, res, next) => {
   if (roles.indexOf('admin') >= 0 && req.user.isAdmin) {
@@ -69,6 +70,14 @@ router.post('/news', adminController.getAnnouncements)
 router.get('/syllabus', syllabusController.getSyllabus)
 router.put('/syllabus', syllabusController.updateSyllabus)
 router.delete('/syllabus', syllabusController.deleteSyllabus)
+
+router.post('/transactions/selectPlan', transactionController.selectPlan)
+router.post('/transactions/:id/paid', transactionController.paidTransaction)
+router.get('/transactions', transactionController.getTransactions)
+router.post('/transactions', transactionController.createTransaction)
+router.delete('/transactions/:id', transactionController.deleteTransaction)
+router.put('/transactions/:id', onlyAdmin, transactionController.updateTransaction)
+router.get('/admin/transactions', onlyAdmin, transactionController.getAdminTransactions)
 
 
 module.exports = router
