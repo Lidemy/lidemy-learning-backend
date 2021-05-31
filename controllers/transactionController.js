@@ -7,6 +7,7 @@ const sequelize = db.sequelize
 
 const PLAN_A_AMOUNT = 5000
 const PLAN_B_AMOUNT = 17500
+const transactionLimit = 20
 
 const transactionController = {
   selectPlan: (req, res) => {
@@ -160,7 +161,9 @@ const transactionController = {
         return res.status(500).end()
       }
 
-      return transaction.destroy()
+      return transaction.update({
+        isDelete: true
+      })
     }).then(() => {
       res.json(SUCCESS.GENERAL)
     }).catch(err => {
@@ -170,20 +173,19 @@ const transactionController = {
   },
 
   updateTransaction: (req, res) => {
+    if (!req.params.id) {
+      return res.status(500).end()
+    }
 
-  },
+    const params = {}
 
-  getAdminTransactions: (req, res) => {
+    if (req.body.name) params.name = req.body.name
+    if (req.body.amount) params.amount = req.body.amount
+    if (req.body.status) params.status = req.body.status
 
-  },
-
-  updateAnnouncement: (req, res) => {
-    Announcement.findByPk(req.params.id)
+    Transaction.findByPk(req.params.id)
     .then(item => {
-      return item.update({
-        title: req.body.title,
-        content: req.body.content
-      })
+      return item.update(params)
     })
     .then(() => {
       res.json(SUCCESS.GENERAL)
@@ -191,6 +193,28 @@ const transactionController = {
     .catch(err => {
       console.log(err)
       res.status(500).end()
+    })
+  },
+
+  getAdminTransactions: (req, res) => {
+    let offset = 0
+    if(req.query.page) {
+      offset = (req.query.page - 1) * transactionLimit
+    }
+
+    Transaction.findAndCountAll({
+      include: [User],
+      limit: transactionLimit,
+      offset: offset,
+      order: [['updatedAt', 'DESC']]
+    }).then(result => {
+      res.json({
+        count: result.count,
+        transactions: result.rows
+      })
+    }).catch(err => {
+      console.log(err)
+      res.json([])
     })
   },
 

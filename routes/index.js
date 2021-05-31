@@ -56,7 +56,6 @@ router.get('/admin/news/:id', onlyAdmin, adminController.getAnnouncement)
 router.put('/admin/news/:id', onlyAdmin, adminController.updateAnnouncement)
 router.delete('/admin/news/:id', onlyAdmin, adminController.deleteAnnouncement)
 router.get('/admin/users/drop', onlyAdmin, adminController.getDropUsers)
-router.get('/admin/transactions', onlyAdmin, transactionController.getAdminTransactions)
 
 router.post('/invite', onlyAdmin, adminController.createInvite)
 
@@ -77,7 +76,8 @@ router.post('/transactions/:id/paid', transactionController.paidTransaction)
 router.get('/transactions', transactionController.getTransactions)
 router.post('/transactions', transactionController.createTransaction)
 router.delete('/transactions/:id', transactionController.deleteTransaction)
-router.put('/transactions/:id', transactionController.updateTransaction)
+router.put('/transactions/:id', onlyAdmin, transactionController.updateTransaction)
+router.get('/admin/transactions', onlyAdmin, transactionController.getAdminTransactions)
 
 
 module.exports = router
