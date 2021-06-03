@@ -202,9 +202,15 @@ const transactionController = {
       offset = (req.query.page - 1) * transactionLimit
     }
 
+    let whereCondition = {}
+    if (req.query.status) {
+      whereCondition['status'] = req.query.status
+    }
+
     Transaction.findAndCountAll({
       include: [User],
       limit: transactionLimit,
+      where: whereCondition,
       offset: offset,
       order: [['updatedAt', 'DESC']]
     }).then(result => {
