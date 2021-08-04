@@ -20,6 +20,8 @@ module.exports = (sequelize, DataTypes) => {
   User.associate = function(models) {
     User.hasMany(models.Progression)
     User.hasMany(models.Report)
+    User.hasMany(models.Article)
+    User.hasMany(models.Comment)
     User.hasMany(models.Homework, {
       as: 'homeworks',
       foreignKey: 'TAId'
