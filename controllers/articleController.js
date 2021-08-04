@@ -15,14 +15,14 @@ const articleController = {
       offset = (req.query.page - 1) * itemsPerPage
     }
 
-    Article.findAll({
-      include: [User]
+    Article.findAndCountAll({
+      include: [User],
       limit: itemsPerPage,
       offset: offset,
       where: {
         isDelete: false
-      }
-      order: [['updatedAt', 'DESC']]
+      },
+      order: [['createdAt', 'DESC']]
     }).then(list => {
       res.json(list)
     }).catch(err => {
@@ -33,7 +33,10 @@ const articleController = {
 
   getArticle: (req, res) => {
     Article.findByPk(req.params.id, {
-      include: [User, Comment]
+      include: [User, {
+        model: Comment,
+        include: [User]
+      }]
     }).then(item => {
       res.json(item)
     }).catch(err => {
@@ -49,8 +52,10 @@ const articleController = {
     Article.create({
       UserId: req.user.id,
       title: req.body.title,
-      content: req.body.content
-      nickname: req.body.nickname || null
+      content: req.body.content,
+      //nickname: req.body.nickname || null,
+      //createdAt: req.body.createdAt,
+      //updatedAt: req.body.updatedAt
     }).then(() => {
       res.json(SUCCESS.GENERAL)
     }).catch(err => {

@@ -13,7 +13,7 @@ const commentController = {
     }
     Comment.create({
       UserId: req.user.id,
-      content: req.body.content
+      content: req.body.content,
       ArticleId: req.body.ArticleId
     }).then(() => {
       res.json(SUCCESS.GENERAL)
