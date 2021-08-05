@@ -5,22 +5,34 @@ const User = db.User
 const Article = db.Article
 const Comment = db.Comment
 const Sequelize = db.Sequelize
+const Op = Sequelize.Op;
 
 const itemsPerPage = 10
 
 const articleController = {
   getArticles: (req, res) => {
     let offset = 0
+    const keyword = req.query.keyword
     if(req.query.page) {
       offset = (req.query.page - 1) * itemsPerPage
     }
 
     Article.findAndCountAll({
-      include: [User],
+      include: [User, {
+        model: Comment,
+        attributes: ['id']
+      }],
       limit: itemsPerPage,
+      attributes: [ 'id', 'nickname','title', 'createdAt', 'updatedAt', 'UserId' ],
       offset: offset,
       where: {
-        isDelete: false
+        isDelete: false,
+        ...(keyword && {
+          [Op.or]: [
+            { title: {[Op.substring]: keyword} },
+            { content: {[Op.substring]: keyword} }, 
+          ]
+        })
       },
       order: [['createdAt', 'DESC']]
     }).then(list => {
@@ -52,12 +64,11 @@ const articleController = {
     Article.create({
       UserId: req.user.id,
       title: req.body.title,
-      content: req.body.content,
-      //nickname: req.body.nickname || null,
-      //createdAt: req.body.createdAt,
-      //updatedAt: req.body.updatedAt
-    }).then(() => {
-      res.json(SUCCESS.GENERAL)
+      content: req.body.content
+    }).then((item) => {
+      res.json({
+        id: item.id
+      })
     }).catch(err => {
       console.log(err)
       res.status(500).end()
