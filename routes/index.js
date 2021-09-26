@@ -88,6 +88,7 @@ router.put('/articles/:id', articleController.updateArticle)
 router.delete('/articles/:id', articleController.deleteArticle)
 
 router.post('/comments', commentController.createComment)
+router.get('/comments', commentController.getComments)
 router.put('/comments/:id', commentController.updateComment)
 router.delete('/comments/:id', commentController.deleteComment)
 

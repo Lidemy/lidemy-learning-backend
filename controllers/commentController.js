@@ -7,6 +7,26 @@ const Comment = db.Comment
 const Sequelize = db.Sequelize
 
 const commentController = {
+  getComments: (req, res) => {
+    const itemsPerPage = 5
+    let offset = 0
+    if(req.query.page) {
+      offset = (req.query.page - 1) * itemsPerPage
+    }
+
+    Comment.findAll({
+      include: [User, Article],
+      limit: itemsPerPage,
+      offset: offset,
+      order: [['createdAt', 'DESC']]
+    }).then(list => {
+      res.json(list)
+    }).catch(err => {
+      console.log(err)
+      res.json([])
+    })
+  },
+
   createComment: (req, res) => {
     if (!req.body.content || !req.body.ArticleId) {
       return res.status(500).end()
