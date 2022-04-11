@@ -13,6 +13,25 @@ function formatTime(time) {
 
 const userController = {
   me: (req, res) => {
+    // check And Add Anniversary Progress
+    if (req.user.semester === 5 && req.user.status === 'active' && !req.user.checkAnniversary) {
+      User.findByPk(req.user.id).then(user => {
+        return sequelize.transaction(t => {
+          return user.update({
+            checkAnniversary: true
+          }, {transaction: t})
+          .then(() => {
+            return Progression.create({
+              UserId: user.id,
+              level: 52
+            })
+          })
+        })
+        .then(() => {
+          return res.json(req.user)
+        })
+      })
+    }
     return res.json(req.user)
   },
 
@@ -151,7 +170,11 @@ const userController = {
           dates,
           wordCount: count,
           length: reports.length,
-          progressions: progressions.map(item => `${formatTime(item.createdAt)} 成功征服第 ${item.level} 週`)
+          progressions: progressions.map(item => {
+            return (item.level !== 52)
+              ? `${formatTime(item.createdAt)} 成功征服第 ${item.level} 週`
+              : `${formatTime(item.createdAt)} 「恭喜學習滿一周年！」`
+          })
         })
       })
     }).catch(err => {
